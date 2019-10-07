@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava;
 
-import ru.javawebinar.topjava.storage.ListStorage;
+import ru.javawebinar.topjava.storage.MapStorage;
 import ru.javawebinar.topjava.storage.Storage;
 
 public class Config {
@@ -11,7 +11,7 @@ public class Config {
         return INSTANCE;
     }
     private Config(){
-        storage = new ListStorage();
+        storage = new MapStorage();
     }
 
     public Storage getStorage() {

@@ -1,12 +1,15 @@
 package ru.javawebinar.topjava.util;
 
+import ru.javawebinar.topjava.Config;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.Storage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +19,16 @@ import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
     private static final int DEFAULT_CALORIES_PER_DAY = 2000;
+    private static final Storage storage = Config.getInstance().getStorage();
+    private static final AtomicInteger id = new AtomicInteger();
+//    meals = Arrays.asList(
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500, id.getAndIncrement()),
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000, id.getAndIncrement()),
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500, id.getAndIncrement()),
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000, id.getAndIncrement()),
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500, id.getAndIncrement()),
+//            new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510, id.getAndIncrement()));
+
 
 /*
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -55,14 +68,14 @@ public class MealsUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<MealTo> getFilteredByCycle(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> getFilteredByCycle(List<Meal> meals, LocalTime startTime, LocalTime endTime) {
         final Map<LocalDate, Integer> caloriesSumByDate = new HashMap<>();
         meals.forEach(meal -> caloriesSumByDate.merge(meal.getDate(), meal.getCalories(), Integer::sum));
 
         final List<MealTo> mealsTo = new ArrayList<>();
         meals.forEach(meal -> {
             if (TimeUtil.isBetween(meal.getTime(), startTime, endTime)) {
-                mealsTo.add(createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay));
+                mealsTo.add(createTo(meal, caloriesSumByDate.get(meal.getDate()) > DEFAULT_CALORIES_PER_DAY));
             }
         });
         return mealsTo;
