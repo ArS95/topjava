@@ -1,8 +1,9 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.Config;
+import ru.javawebinar.topjava.TestData;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.storage.MealsMapStorage;
 import ru.javawebinar.topjava.storage.Storage;
 import ru.javawebinar.topjava.util.DateUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -24,7 +25,9 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-        storage = Config.getInstance().getStorage();
+        super.init(config);
+        storage = new MealsMapStorage();
+        TestData.TEST_DATA_LIST.forEach(uM -> storage.add(uM));
     }
 
     @Override
@@ -56,7 +59,8 @@ public class MealServlet extends HttpServlet {
             return;
         }
 
-        int id = Integer.parseInt(request.getParameter("id"));
+        String strId = request.getParameter("id");
+        int id = Integer.parseInt(strId != null ? strId : "-1");
         Meal meal;
         switch (action) {
             case "delete":

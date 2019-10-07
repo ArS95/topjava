@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface Storage {
 
-    void update(Meal meal);
+    Meal update(Meal meal);
 
-    void add(Meal meal);
+    Meal add(Meal meal);
 
     Meal get(int id);
 

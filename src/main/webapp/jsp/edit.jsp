@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <jsp:useBean id="meals" class="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <title>Редактирование/добавление еды</title>
+    <title>${meals.description == null ? 'Добавление':'Редактирование'} еды</title>
 </head>
 <body>
 <form id="meals" method="post" action="meals" enctype="application/x-www-form-urlencoded">

@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Objects;
 
 public class MealTo {
     private final LocalDateTime dateTime;
@@ -13,8 +12,7 @@ public class MealTo {
     private final int calories;
 
     private final int id;
-    //    private final Supplier<Boolean> excess;
-//    private final AtomicBoolean excess;
+
     private final boolean excess;
 
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess, int id) {
@@ -51,22 +49,6 @@ public class MealTo {
 
     public boolean getExcess() {
         return excess;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MealTo mealTo = (MealTo) o;
-        return calories == mealTo.calories &&
-                id == mealTo.id &&
-                dateTime.equals(mealTo.dateTime) &&
-                Objects.equals(description, mealTo.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(dateTime, description, calories, id);
     }
 
     @Override

@@ -10,22 +10,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MapStorage implements Storage {
+public class MealsMapStorage implements Storage {
     private Map<Integer, Meal> storage = new ConcurrentHashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(MapStorage.class);
+    private static final Logger log = LoggerFactory.getLogger(MealsMapStorage.class);
     private static final AtomicInteger id = new AtomicInteger();
 
     @Override
-    public void update(Meal meal) {
+    public Meal update(Meal meal) {
         log.info("UPDATE: " + meal);
         storage.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
-    public void add(Meal meal) {
+    public Meal add(Meal meal) {
         log.info("ADD: " + meal);
         meal.setId(id.getAndIncrement());
         storage.put(meal.getId(), meal);
+        return meal;
     }
 
     @Override
