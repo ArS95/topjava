@@ -38,9 +38,9 @@ public class MealServlet extends HttpServlet {
         int calories = Integer.parseInt(request.getParameter("calories"));
 
         Meal meal = new Meal(localDateTime, description, calories);
-        String action = request.getParameter("action");
-        if (action.equals("edit")) {
-            meal.setId(Integer.parseInt(request.getParameter("id")));
+        int id = Integer.parseInt(request.getParameter("id"));
+        if (storage.get(id) != null) {
+            meal.setId(id);
             storage.update(meal);
         } else {
             storage.add(meal);
@@ -52,16 +52,13 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
 
-        String action = request.getParameter("action");
-        if (action == null) {
-            request.setAttribute("meals", MealsUtil.getFilteredByCycle(storage.getAll(), LocalTime.of(7, 0), LocalTime.of(12, 0)));
-            request.getRequestDispatcher("/jsp/meals.jsp").forward(request, response);
-            return;
-        }
-
         String strId = request.getParameter("id");
         int id = Integer.parseInt(strId != null ? strId : "-1");
         Meal meal;
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
         switch (action) {
             case "delete":
                 storage.delete(id);
@@ -74,9 +71,11 @@ public class MealServlet extends HttpServlet {
                 meal = storage.get(id);
                 break;
             default:
-                throw new IllegalArgumentException("Action " + action + " is illegal");
+                request.setAttribute("meals", MealsUtil.getFilteredByCycle(storage.getAll(), LocalTime.of(0, 0), LocalTime.of(23, 59)));
+                request.getRequestDispatcher("/jsp/meals.jsp").forward(request, response);
+                return;
         }
-        request.setAttribute("meals", meal);
+        request.setAttribute("meal", meal);
         request.getRequestDispatcher("/jsp/edit.jsp").forward(request, response);
     }
 }

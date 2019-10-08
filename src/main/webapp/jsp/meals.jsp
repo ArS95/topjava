@@ -27,8 +27,6 @@
                 <td><a href="meals?id=${meal.id}&action=edit"><img src="jsp/img/pencil.png"></a></td>
                 <td><a href="meals?id=${meal.id}&action=delete"><img src="jsp/img/delete.png"></a></td>
             </tr>
-            <%--            <img src="img/delete.png">--%>
-            <%--            <img src="img/pencil.png">--%>
         </c:forEach>
     </table>
     <button type="button"><a href="?action=add">Добавить еду</a></button>

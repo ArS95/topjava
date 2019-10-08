@@ -20,5 +20,5 @@ public class TestData {
             new Meal(LocalDateTime.of(2017, Month.MAY, 1, 10, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2018, Month.MAY, 3, 11, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2018, Month.MAY, 3, 13, 0), "Обед", 500),
-            new Meal(LocalDateTime.of(2018, Month.MAY, 3, 20, 0), "Ужин", 510));
+            new Meal(LocalDateTime.of(2018, Month.MAY, 3, 23, 59), "Ужин", 510));
 }

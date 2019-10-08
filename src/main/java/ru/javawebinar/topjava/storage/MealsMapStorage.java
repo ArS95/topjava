@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MealsMapStorage implements Storage {
     private Map<Integer, Meal> storage = new ConcurrentHashMap<>();
     private static final Logger log = LoggerFactory.getLogger(MealsMapStorage.class);
-    private static final AtomicInteger id = new AtomicInteger();
+    private final AtomicInteger id = new AtomicInteger();
 
     @Override
     public Meal update(Meal meal) {
