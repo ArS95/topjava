@@ -48,6 +48,7 @@ public class MealServlet extends HttpServlet {
         response.sendRedirect("meals");
     }
 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
@@ -71,7 +72,7 @@ public class MealServlet extends HttpServlet {
                 meal = storage.get(id);
                 break;
             default:
-                request.setAttribute("meals", MealsUtil.getFilteredByCycle(storage.getAll(), LocalTime.of(0, 0), LocalTime.of(23, 59)));
+                request.setAttribute("meals", MealsUtil.getFilteredByCycle(storage.getAll(), LocalTime.MIN, LocalTime.MAX));
                 request.getRequestDispatcher("/jsp/meals.jsp").forward(request, response);
                 return;
         }
