@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.List;
 
@@ -21,11 +22,6 @@ public class MealRestController {
     @Autowired
     private MealService service;
 
-    public List<MealTo> getAll() {
-        log.info("getAll");
-        return service.getAll(authUserId());
-    }
-
     public Meal get(int mealId) {
         log.info("get {}", mealId);
         return service.get(mealId, authUserId());
@@ -34,7 +30,7 @@ public class MealRestController {
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal);
+        return service.create(meal, authUserId());
     }
 
     public void delete(int mealId) {
@@ -42,9 +38,23 @@ public class MealRestController {
         service.delete(mealId, authUserId());
     }
 
-    public void update(Meal meal, int mealId) {
+    public Meal update(Meal meal, int mealId) {
         log.info("update {} with id={}", meal, mealId);
         assureIdConsistent(meal, mealId);
-        service.update(meal);
+        return service.update(meal, authUserId());
+    }
+
+    public List<MealTo> getAllTo() {
+        log.info("getAllTo");
+        return MealsUtil.getTos(service.getAll(authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    }
+
+    public <T> List<MealTo> getAllFiltered(T start, T end) {
+        log.info("getAllFiltered");
+        return MealsUtil.getFilteredTos(getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY, start, end);
+    }
+
+    private List<Meal> getAll() {
+        return service.getAll(authUserId());
     }
 }
