@@ -24,7 +24,7 @@ public class SpringMain {
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             System.out.println(mealRestController.create(new Meal(LocalDateTime.MAX, "Zavrtak", 1500)));
             System.out.println(mealRestController.get(4));
-            System.out.println(mealRestController.getAll());
+            System.out.println(mealRestController.getAllTo());
 
             Meal meal1 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
             meal1.setId(1);

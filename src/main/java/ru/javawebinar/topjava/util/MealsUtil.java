@@ -19,17 +19,11 @@ public class MealsUtil {
 
     static {
         Meal meal1 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);
-        meal1.setUserId(1);
         Meal meal2 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000);
-        meal2.setUserId(1);
         Meal meal3 = new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500);
-        meal3.setUserId(1);
         Meal meal4 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000);
-        meal4.setUserId(2);
         Meal meal5 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500);
-        meal5.setUserId(2);
         Meal meal6 = new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510);
-        meal6.setUserId(2);
 
         MEALS = Arrays.asList(
                 meal1,

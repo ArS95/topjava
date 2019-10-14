@@ -16,16 +16,16 @@ public class InMemoryMealRepository implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(m -> this.save(m, m.getUserId()));
+        MealsUtil.MEALS.forEach(m -> this.save(m, 2));
     }
 
     @Override
     public Meal save(Meal meal, int userId) {
-        Integer mealId = meal.getId();
 
         Map<Integer, Meal> mealMap = getMealMap(userId);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            int mealId = meal.getId();
             meal.setUserId(userId);
 
             if (mealMap != null) {
@@ -39,9 +39,10 @@ public class InMemoryMealRepository implements MealRepository {
         }
         // treat case: update, but not present in storage
         if (mealMap != null) {
-            Meal repMeal = mealMap.get(mealId);
-            if (repMeal != null && repMeal.getUserId() == userId) {
-                return mealMap.put(mealId, meal);
+            Meal repMeal = mealMap.get(meal.getId());
+            if (repMeal != null) {
+                meal.setUserId(userId);
+                return mealMap.put(meal.getId(), meal);
             }
         }
         return null;
