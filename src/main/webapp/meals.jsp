@@ -28,7 +28,7 @@
         <div class="container">
             <div class="card border-light">
                 <div class="card-body pb-0">
-                    <form id="filter" method="post">
+                    <form id="filter" method="get">
                         <div class="row">
                             <div class="offset-1 col-2">
                                 <label>От даты</label>
@@ -50,7 +50,7 @@
                         <hr>
                         <div class="ard-footer text-right">
                             <button class="btn btn-danger" type="button" onclick="window.history.back()">Отменить</button>
-                            <button class="btn btn-primary" type="submit"> Отфильровать</button>
+                            <button class="btn btn-primary" type="submit"><a href="meals?action=filter">Отфильровать</a> </button>
                         </div>
                     </form>
                 </div>

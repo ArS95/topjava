@@ -8,9 +8,6 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<ul>
-    <li><a href="users?userId=1">1</a></li>
-    <li><a href="users?userId=2">2</a></li>
-</ul>
+
 </body>
 </html>

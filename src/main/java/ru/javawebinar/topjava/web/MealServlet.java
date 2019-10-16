@@ -36,49 +36,27 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
 
-        String strDate = request.getParameter("startDate");
-        String strTime = request.getParameter("startTime");
-        List<MealTo> filteredList;
-        if (strDate != null) {
-            LocalDate startDate = LocalDate.parse(strDate);
-            LocalDate endDate = LocalDate.parse(request.getParameter("endDate"));
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
 
-            setAttributeAndRequestDispatcher(startDate, endDate, request, response);
-        } else if (strTime != null) {
-            LocalTime startTime = LocalTime.parse(strTime);
-            LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
-
-            setAttributeAndRequestDispatcher(startTime, endTime, request, response);
+        boolean isNew = meal.isNew();
+        log.info(isNew ? "Create {}" : "Update {}", meal);
+        if (isNew) {
+            mealRestController.create(meal);
         } else {
-            String id = request.getParameter("id");
-
-            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                    LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"),
-                    Integer.parseInt(request.getParameter("calories")));
-
-            boolean isNew = meal.isNew();
-            log.info(isNew ? "Create {}" : "Update {}", meal);
-            if (isNew) {
-                mealRestController.create(meal);
-            } else {
-                mealRestController.update(meal, meal.getId());
-            }
-            response.sendRedirect("meals");
+            mealRestController.update(meal, meal.getId());
         }
-    }
-
-    private <T> void setAttributeAndRequestDispatcher(T start, T end, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("meals", mealRestController.getAllFiltered(start, end));
-        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+        response.sendRedirect("meals");
     }
 
     @Override
@@ -100,13 +78,32 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
+            case "filter":
+                String strDate = request.getParameter("startDate");
+                String strTime = request.getParameter("startTime");
+                if (strDate != null) {
+
+                    LocalDate startDate = LocalDate.parse(strDate);
+                    LocalDate endDate = LocalDate.parse(request.getParameter("endDate"));
+                    setAttributeAndRequestDispatcher(mealRestController.getAllFilteredByDate(startDate, endDate), request, response);
+                } else if (strTime != null) {
+
+                    LocalTime startTime = LocalTime.parse(strTime);
+                    LocalTime endTime = LocalTime.parse(request.getParameter("endTime"));
+                    setAttributeAndRequestDispatcher(mealRestController.getAllFilteredByTime(startTime, endTime), request, response);
+                }
+                break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", mealRestController.getAllTo());
-                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                setAttributeAndRequestDispatcher(mealRestController.getAllTo(), request, response);
                 break;
         }
+    }
+
+    private <T> void setAttributeAndRequestDispatcher(List<MealTo> listTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("meals", listTo);
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 
     private int getId(HttpServletRequest request) {

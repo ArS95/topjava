@@ -29,7 +29,8 @@ public class InMemoryMealRepository implements MealRepository {
             meal.setUserId(userId);
 
             if (mealMap != null) {
-                return mealMap.put(mealId, meal);
+                mealMap.put(mealId, meal);
+                return meal;
             } else {
                 Map<Integer, Meal> hashMap = new HashMap<>();
                 hashMap.put(mealId, meal);
@@ -42,7 +43,8 @@ public class InMemoryMealRepository implements MealRepository {
             Meal repMeal = mealMap.get(meal.getId());
             if (repMeal != null) {
                 meal.setUserId(userId);
-                return mealMap.put(meal.getId(), meal);
+                mealMap.put(meal.getId(), meal);
+                return meal;
             }
         }
         return null;

@@ -12,8 +12,10 @@ public class DateTimeUtil {
     public static <T> boolean isBetweenTime(LocalDateTime lt, T startTime, T endTime) {
         if (startTime instanceof LocalDate) {
             return lt.toLocalDate().compareTo((ChronoLocalDate) startTime) >= 0 && lt.toLocalDate().compareTo((ChronoLocalDate) endTime) <= 0;
+        } else if (startTime instanceof LocalTime) {
+            return lt.toLocalTime().compareTo((LocalTime) startTime) >= 0 && lt.toLocalTime().compareTo((LocalTime) endTime) <= 0;
         }
-        return lt.toLocalTime().compareTo((LocalTime) startTime) >= 0 && lt.toLocalTime().compareTo((LocalTime) endTime) <= 0;
+        throw new IllegalArgumentException("arguments must be instanceof LocalDate or LocalTime");
     }
 
     public static String toString(LocalDateTime ldt) {
