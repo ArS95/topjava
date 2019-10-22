@@ -11,6 +11,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -50,7 +51,7 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenDates() {
-        assertMatch(service.getBetweenDates(LocalDate.of(2019, Month.OCTOBER, 20), LocalDate.of(2019, Month.OCTOBER, 21), USER_ID), MEAL_1, MEAL_2, MEAL_3);
+        assertMatch(service.getBetweenDates(LocalDate.of(2015, Month.OCTOBER, 20), LocalDate.of(2019, Month.OCTOBER, 21), USER_ID), MEAL_3, MEAL_2, MEAL_1);
     }
 
     @Test
@@ -61,8 +62,8 @@ public class MealServiceTest {
     @Test
     public void update() {
         Meal expected = new Meal(MEAL_1);
-        expected.setCalories(CALORIES_2);
-        expected.setDescription(DESCRIPTION_2);
+        expected.setCalories(1555);
+        expected.setDescription("myLunch");
         service.update(expected, USER_ID);
         assertMatch(service.get(expected.getId(), USER_ID), expected);
     }
@@ -75,7 +76,7 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal expected = new Meal(DATE_TIME_1, DESCRIPTION_1, CALORIES_1);
+        Meal expected = new Meal(LocalDateTime.of(2015, Month.OCTOBER, 25, 10, 00), "myLunch", 1999);
         Meal actual = service.create(expected, USER_ID);
         expected.setId(actual.getId());
         assertMatch(actual, expected);

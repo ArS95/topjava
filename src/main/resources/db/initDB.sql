@@ -1,6 +1,7 @@
-DROP TABLE IF EXISTS users cascade;
-DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS meals;
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS users;
+
 DROP INDEX IF EXISTS users_unique_email_idx;
 DROP SEQUENCE IF EXISTS global_seq;
 
@@ -33,7 +34,8 @@ CREATE TABLE meals
     date_time   TIMESTAMP NOT NULL,
     description TEXT      NOT NULL,
     calories    INTEGER   NOT NULL,
-    CONSTRAINT meals_idx UNIQUE (date_time, user_id),
+    CONSTRAINT meals_idx UNIQUE (user_id, date_time),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX meals_uniq_date_time ON meals (date_time);
+CREATE INDEX meals_user_id_index ON meals (user_id);
+CREATE INDEX meals_date_time_index ON meals (date_time);
