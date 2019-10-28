@@ -1,11 +1,12 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -32,26 +35,38 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
-    private long start;
+    private static final List<String> listTestNameAndMethodExecutionTime = new ArrayList<>();
 
+    @Rule
+    public TestWatcher watcher = new TestWatcher() {
+        private long start;
+
+        @Override
+        protected void starting(Description description) {
+            start = System.currentTimeMillis();
+        }
+
+        @Override
+        protected void finished(Description description) {
+            String string = "\tMethod name: " + name.getMethodName() + ". Test execution time: " + (System.currentTimeMillis() - start) + " ms";
+            listTestNameAndMethodExecutionTime.add(string);
+            log.info(string);
+        }
+    };
     @Rule
     public final TestName name = new TestName();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @AfterClass
+    public static void afterClass() {
+        String joiner = String.join("\r\n", listTestNameAndMethodExecutionTime);
+        log.info("\r\n" + MealServiceTest.class.getSimpleName() + ":\r\n" + joiner);
+    }
+
     @Autowired
     private MealService service;
-
-    @Before
-    public void start() {
-        start = System.currentTimeMillis();
-    }
-
-    @After
-    public void end() {
-        log.info("Method name: {} . Timeout: {} ms", name.getMethodName(), (System.currentTimeMillis() - start));
-    }
 
     @Test
     public void delete() {
@@ -99,6 +114,7 @@ public class MealServiceTest {
     }
 
     @Test
+
     public void update() {
         Meal updated = getUpdated();
         service.update(updated, USER_ID);
