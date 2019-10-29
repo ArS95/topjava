@@ -3,9 +3,7 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TestName;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.*;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -38,31 +36,25 @@ public class MealServiceTest {
     private static final List<String> listTestNameAndMethodExecutionTime = new ArrayList<>();
 
     @Rule
-    public TestWatcher watcher = new TestWatcher() {
-        private long start;
-
-        @Override
-        protected void starting(Description description) {
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected void finished(Description description) {
-            String string = "\tMethod name: " + name.getMethodName() + ". Test execution time: " + (System.currentTimeMillis() - start) + " ms";
-            listTestNameAndMethodExecutionTime.add(string);
-            log.info(string);
-        }
-    };
-    @Rule
     public final TestName name = new TestName();
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    @Rule
+    public final Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String format = String.format("%-20s %4d ms", description.getMethodName(), nanos / 1000000);
+            listTestNameAndMethodExecutionTime.add(format);
+            log.info(format);
+        }
+    };
+
     @AfterClass
     public static void afterClass() {
-        String joiner = String.join("\r\n", listTestNameAndMethodExecutionTime);
-        log.info("\r\n" + MealServiceTest.class.getSimpleName() + ":\r\n" + joiner);
+        String joiner = String.join("\n", listTestNameAndMethodExecutionTime);
+        log.info("\n\t" + MealServiceTest.class.getSimpleName() + ":\n" + joiner);
     }
 
     @Autowired
