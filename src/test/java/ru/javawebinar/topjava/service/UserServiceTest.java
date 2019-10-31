@@ -33,10 +33,8 @@ public class UserServiceTest {
     public void create() throws Exception {
         User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
         User created = service.create(newUser);
-        Integer newId = created.getId();
-        newUser.setId(newId);
-        assertMatch(created, newUser);
-        assertMatch(service.get(newId), newUser);
+        newUser.setId(created.getId());
+        assertMatch(service.getAll(), ADMIN, newUser, USER);
     }
 
     @Test(expected = DataAccessException.class)
@@ -44,10 +42,10 @@ public class UserServiceTest {
         service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.ROLE_USER));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void delete() throws Exception {
         service.delete(USER_ID);
-        service.get(USER_ID);
+        assertMatch(service.getAll(), ADMIN);
     }
 
     @Test(expected = NotFoundException.class)
