@@ -3,16 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
 <html>
-<head>
-    <title>Meals</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+<jsp:include page="fragments/mealsHeadTag.jsp"/>
 <body>
 <section>
-    <h3><a href="index.jsp">Home</a></h3>
+    <c:set var="path">${pageContext.request.contextPath}</c:set>
+    <h3><a href="${path}/">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-    <c:set var="path">${pageContext.request.contextPath}</c:set>
     <form method="post" action="${path}/meals/filter">
         <dl>
             <dt>From Date:</dt>
