@@ -1,3 +1,4 @@
+/*
 package ru.javawebinar.topjava.web;
 
 import org.springframework.util.StringUtils;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
@@ -33,6 +33,7 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
@@ -54,17 +55,17 @@ public class MealServlet extends HttpServlet {
 
         switch (action == null ? "all" : action) {
             case "delete":
-                int id = getId(request);
-                mealController.delete(id);
-                response.sendRedirect("meals");
+//                int id = getId(request);
+//                mealController.delete(id);
+//                response.sendRedirect("meals");
                 break;
             case "create":
             case "update":
-                final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mealController.get(getId(request));
-                request.setAttribute("meal", meal);
-                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+//                final Meal meal = "create".equals(action) ?
+//                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+//                        mealController.get(getId(request));
+//                request.setAttribute("meal", meal);
+//                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
             case "filter":
                 LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
@@ -87,3 +88,4 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 }
+*/

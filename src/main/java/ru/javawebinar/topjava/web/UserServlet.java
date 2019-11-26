@@ -1,3 +1,4 @@
+/*
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
@@ -40,3 +41,4 @@ public class UserServlet extends HttpServlet {
         request.getRequestDispatcher("/users.jsp").forward(request, response);
     }
 }
+*/

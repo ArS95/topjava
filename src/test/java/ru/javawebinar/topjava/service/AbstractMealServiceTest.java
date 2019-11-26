@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
@@ -78,6 +79,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         thrown.expect(NotFoundException.class);
         thrown.expectMessage("Not found entity with id=" + MEAL1_ID);
         service.update(MEAL1, ADMIN_ID);
+        service.update(MEAL1, ADMIN_ID);
     }
 
     @Test
@@ -97,6 +99,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
     }
 
+    @Ignore
     @Test
     public void createWithException() throws Exception {
         validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID), ConstraintViolationException.class);
