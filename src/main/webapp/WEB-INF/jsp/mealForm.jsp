@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
@@ -8,7 +8,9 @@
     <h3><a href="${pageContext.request.contextPath}/"><spring:message code="app.home"/></a></h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
-    <h2>${meal.id == null ? 'Create meal' : 'Edit meal'}</h2>
+    <c:set var="create"><spring:message code="meal.create"/></c:set>
+    <c:set var="edit"><spring:message code="meal.edit"/></c:set>
+    <h2>${meal.id == null ? create : edit}</h2>
     <c:set var="path">${pageContext.request.contextPath}</c:set>
     <form method="post" action="${path}/meals/${meal.id == null ? 'create' : 'update'}">
         <input type="hidden" name="id" value="${meal.id}">
@@ -24,8 +26,8 @@
             <dt><spring:message code="meal.calories"/>:</dt>
             <dd><input type="number" value="${meal.calories}" name="calories" required></dd>
         </dl>
-        <button type="submit">Save</button>
-        <button onclick="window.history.back()" type="button">Cancel</button>
+        <button type="submit"><spring:message code="common.save"/></button>
+        <button onclick="window.history.back()" type="button"><spring:message code="common.cancel"/></button>
     </form>
 </section>
 </body>
