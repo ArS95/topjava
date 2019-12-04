@@ -28,43 +28,28 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    @GetMapping("/create")
+    @GetMapping({"/create", "/update"})
     public String forCreate(HttpServletRequest request) {
-        Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
+        Meal meal = request.getParameter("id") == null ? new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) : super.get(getId(request));
         request.setAttribute("meal", meal);
         return "mealForm";
     }
 
-    @PostMapping("/create")
+    @PostMapping({"/create", "/update"})
     public String create(HttpServletRequest request) throws IOException {
-        request.setCharacterEncoding("UTF-8");
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
-        super.create(meal);
+        if (request.getParameter("id").isBlank()) {
+            super.create(meal);
+        } else {
+            super.update(meal, getId(request));
+        }
         return "redirect:/meals";
     }
 
-    @GetMapping("/update")
-    public String forUpdate(HttpServletRequest request) {
-        Meal meal = super.get(getId(request));
-        request.setAttribute("meal", meal);
-        return "mealForm";
-    }
-
-    @PostMapping("/update")
-    public String update(HttpServletRequest request, int id) throws IOException {
-        request.setCharacterEncoding("UTF-8");
-        Meal meal = new Meal(
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
-        super.update(meal, id);
-        return "redirect:/meals";
-    }
-
-    @PostMapping("/filter")
+    @GetMapping("/filter")
     public String filter(HttpServletRequest request) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));

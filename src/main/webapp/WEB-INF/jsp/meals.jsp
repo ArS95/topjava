@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://topjava.javawebinar.ru/functions" %>
@@ -8,11 +8,10 @@
 <jsp:include page="fragments/mealsHeadTag.jsp"/>
 <body>
 <section>
-    <c:set var="path">${pageContext.request.contextPath}</c:set>
-    <h3><a href="${path}/"><spring:message code="app.home"/></a></h3>
+    <h3><a href=""><spring:message code="app.home"/></a></h3>
     <hr/>
     <h2><spring:message code="meal.meals"/></h2>
-    <form method="post" action="${path}/meals/filter">
+    <form method="get" action="meals/filter">
         <dl>
             <dt>
                 <spring:message code="filter.fromDate"/>:
@@ -40,7 +39,7 @@
         <button type="submit"><spring:message code="filter.filter"/></button>
     </form>
     <hr/>
-    <a href="${path}/meals/create"><spring:message code="common.add"/></a>
+    <a href="meals/create"><spring:message code="common.add"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -63,8 +62,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="${path}/meals/update?id=${meal.id}"><spring:message code="meal.edit"/></a></td>
-                <td><a href="${path}/meals/delete?id=${meal.id}"><spring:message code="meal.delete"/></a></td>
+                <td><a href="meals/update?id=${meal.id}"><spring:message code="meal.edit"/></a></td>
+                <td><a href="meals/delete?id=${meal.id}"><spring:message code="meal.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>

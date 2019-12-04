@@ -1,18 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<jsp:include page="fragments/mealFormHeadTag.jsp"/>
+<jsp:include page="fragments/mealsHeadTag.jsp"/>
 <body>
 <section>
-    <h3><a href="${pageContext.request.contextPath}/"><spring:message code="app.home"/></a></h3>
+    <h3><a href=""><spring:message code="app.home"/></a></h3>
     <hr>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <c:set var="create"><spring:message code="meal.create"/></c:set>
     <c:set var="edit"><spring:message code="meal.edit"/></c:set>
     <h2>${meal.id == null ? create : edit}</h2>
-    <c:set var="path">${pageContext.request.contextPath}</c:set>
-    <form method="post" action="${path}/meals/${meal.id == null ? 'create' : 'update'}">
+    <form method="post" action="meals/${meal.id == null ? 'create' : 'update'}">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>
             <dt><spring:message code="meal.dateTime"/>:</dt>

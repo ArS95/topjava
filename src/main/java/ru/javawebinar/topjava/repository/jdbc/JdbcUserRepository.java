@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -20,65 +19,55 @@ import java.util.*;
 @Repository
 public class JdbcUserRepository implements UserRepository {
 
-    private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
-
     private final JdbcTemplate jdbcTemplate;
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final SimpleJdbcInsert insertUser;
 
-    private final TransactionForJdbcRepository transactionForJdbcRepository;
-
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, TransactionForJdbcRepository transactionForJdbcRepository) {
+    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        this.transactionForJdbcRepository = transactionForJdbcRepository;
     }
 
+    @Transactional
     @Override
     public User save(User user) {
-        return transactionForJdbcRepository.<User>transactionMethod(() -> {
-            BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
-            if (user.isNew()) {
-                Number newKey = insertUser.executeAndReturnKey(parameterSource);
-                user.setId(newKey.intValue());
-                jdbcTemplate.batchUpdate("INSERT INTO user_roles (role,user_id) VALUES (?,?)",
-                        user.getRoles(),
-                        user.getRoles().size(), (ps, role) -> {
-                            ps.setString(1, role.name());
-                            ps.setInt(2, user.getId());
-                        });
-            } else if (namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, email=:email, password=:password, " +
-                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0 && namedParameterJdbcTemplate.update("UPDATE user_roles SET role=:role WHERE user_id=:id", parameterSource) == 0) {
-                return null;
-            } else {
-                jdbcTemplate.batchUpdate("UPDATE user_roles SET role=? WHERE user_id=?",
-                        user.getRoles(),
-                        user.getRoles().size(), (ps, role) -> {
-                            ps.setString(1, role.name());
-                            ps.setInt(2, user.getId());
-                        });
-            }
-            return user;
-        });
+        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
+        if (user.isNew()) {
+            Number newKey = insertUser.executeAndReturnKey(parameterSource);
+            user.setId(newKey.intValue());
+        } else if (namedParameterJdbcTemplate.update(
+                "UPDATE users SET name=:name, email=:email, password=:password, " +
+                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0 && namedParameterJdbcTemplate.update("UPDATE user_roles SET role=:role WHERE user_id=:id", parameterSource) == 0) {
+            return null;
+        }
+        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        jdbcTemplate.batchUpdate("INSERT INTO user_roles (role,user_id) VALUES (?,?)",
+                user.getRoles(),
+                user.getRoles().size(), (ps, role) -> {
+                    ps.setString(1, role.name());
+                    ps.setInt(2, user.getId());
+                });
+
+        return user;
     }
 
+    @Transactional
     @Override
     public boolean delete(int id) {
-        return transactionForJdbcRepository.<Boolean>transactionMethod(() -> jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0);
+        return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
 
     @Override
     public User get(int id) {
         Map<Integer, User> userMap = new HashMap<>();
-        jdbcTemplate.query("SELECT * FROM users u INNER JOIN user_roles r ON r.user_id = u.id WHERE u.id = ?", getResultSet(userMap), id);
+        jdbcTemplate.query("SELECT * FROM users u LEFT JOIN user_roles r ON r.user_id = u.id WHERE u.id = ?", getResultSet(userMap), id);
         return DataAccessUtils.singleResult(userMap.values());
     }
 
@@ -86,14 +75,14 @@ public class JdbcUserRepository implements UserRepository {
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         Map<Integer, User> userMap = new HashMap<>();
-        jdbcTemplate.query("SELECT * FROM users u INNER JOIN user_roles r ON r.user_id = u.id WHERE email=?", getResultSet(userMap), email);
+        jdbcTemplate.query("SELECT * FROM users u LEFT JOIN user_roles r ON r.user_id = u.id WHERE email=?", getResultSet(userMap), email);
         return DataAccessUtils.singleResult(userMap.values());
     }
 
     @Override
     public List<User> getAll() {
         Map<Integer, User> userMap = new LinkedHashMap<>();
-        jdbcTemplate.query("SELECT * FROM users u INNER JOIN user_roles r ON u.id = r.user_id ORDER BY name, email", getResultSet(userMap));
+        jdbcTemplate.query("SELECT * FROM users u LEFT JOIN user_roles r ON u.id = r.user_id ORDER BY name, email", getResultSet(userMap));
         return new ArrayList<>(userMap.values());
     }
 
