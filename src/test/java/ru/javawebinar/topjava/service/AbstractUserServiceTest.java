@@ -29,7 +29,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void create() throws Exception {
         User newUser = getNew();
-        User created = service.create(newUser);
+        User created = service.create(new User(newUser));
         newUser.setId(created.getId());
         assertMatch(service.getAll(), ADMIN, newUser, USER);
     }
@@ -70,7 +70,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void update() throws Exception {
         User updated = getUpdated();
-        service.update(updated);
+        service.update(new User(updated));
         assertMatch(service.get(USER_ID), updated);
     }
 
