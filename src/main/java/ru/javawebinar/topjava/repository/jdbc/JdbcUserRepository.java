@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.repository.jdbc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -30,7 +30,6 @@ public class JdbcUserRepository implements UserRepository {
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
@@ -44,10 +43,11 @@ public class JdbcUserRepository implements UserRepository {
             user.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
                 "UPDATE users SET name=:name, email=:email, password=:password, " +
-                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0 && namedParameterJdbcTemplate.update("UPDATE user_roles SET role=:role WHERE user_id=:id", parameterSource) == 0) {
+                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) == 0) {
             return null;
+        } else {
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
         }
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
         jdbcTemplate.batchUpdate("INSERT INTO user_roles (role,user_id) VALUES (?,?)",
                 user.getRoles(),
                 user.getRoles().size(), (ps, role) -> {
@@ -86,11 +86,11 @@ public class JdbcUserRepository implements UserRepository {
         return new ArrayList<>(userMap.values());
     }
 
-    private RowCallbackHandler getResultSet(Map<Integer, User> userMap) {
+    private ResultSetExtractor<User> getResultSet(Map<Integer, User> userMap) {
         return rs -> {
-            do {
+            User user = null;
+            while (rs.next()) {
                 int userId = rs.getInt("id");
-                User user;
                 final String role = rs.getString("role");
                 if (role != null && (user = userMap.get(userId)) != null) {
                     user.getRoles().add(Role.valueOf(role));
@@ -106,7 +106,8 @@ public class JdbcUserRepository implements UserRepository {
                             role != null ? Collections.singletonList(Role.valueOf(role)) : EnumSet.noneOf(Role.class));
                     userMap.put(userId, user);
                 }
-            } while (rs.next());
+            }
+            return user;
         };
     }
 }

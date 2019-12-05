@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.TimingRules;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -50,9 +51,9 @@ abstract public class AbstractServiceTest {
         }
     }
 
-    protected boolean checkCurrentProfile(String profile) {
+    protected boolean checkCurrentProfile() {
         for (String activeProfile : environment.getActiveProfiles()) {
-            if (activeProfile.equals(profile)) {
+            if (activeProfile.equals(Profiles.JDBC)) {
                 return true;
             }
         }

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
-import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
@@ -23,25 +22,21 @@ import static ru.javawebinar.topjava.UserTestData.*;
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
-    protected UserService service;
-
-    @Autowired
     private CacheManager cacheManager;
 
     @Autowired(required = false)
     protected JpaUtil jpaUtil;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         cacheManager.getCache("users").clear();
         if (jpaUtil != null) {
             jpaUtil.clear2ndLevelHibernateCache();
         }
-        if ((checkCurrentProfile("jpa") || checkCurrentProfile("dataJpa")) && jpaUtil == null) {
-            jpaUtil = new JpaUtil();
-            jpaUtil.clear2ndLevelHibernateCache();
-        }
     }
+
+    @Autowired
+    protected UserService service;
 
     @Transactional
     @Test
@@ -101,7 +96,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test()
     public void createWithException() throws Exception {
-        Assume.assumeFalse(checkCurrentProfile(Profiles.JDBC));
+        Assume.assumeFalse(checkCurrentProfile());
         validateRootCause(() -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "  ", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.ROLE_USER)), ConstraintViolationException.class);
