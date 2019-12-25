@@ -9,8 +9,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +34,8 @@ public class MealRestController extends AbstractMealController {
     @GetMapping
     public List<MealTo> getAll() {
         return super.getAll();
+
+
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -54,9 +54,9 @@ public class MealRestController extends AbstractMealController {
         super.update(meal, id);
     }
 
-    @Override
+   /* @Override
     @GetMapping
     public List<MealTo> getBetween(@RequestBody LocalDate startDate, @RequestBody LocalTime startTime, @RequestBody LocalDate endDate, @RequestBody LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
-    }
+    }*/
 }
