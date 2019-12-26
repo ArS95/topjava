@@ -9,13 +9,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = MealRestController.REST_MEALS, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
 
-    static final String REST_MEALS = "rest/meals";
+    static final String REST_MEALS = "/rest/meals";
 
     @Override
     @GetMapping("/{id}")
@@ -28,14 +30,6 @@ public class MealRestController extends AbstractMealController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
-    }
-
-    @Override
-    @GetMapping
-    public List<MealTo> getAll() {
-        return super.getAll();
-
-
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -54,9 +48,15 @@ public class MealRestController extends AbstractMealController {
         super.update(meal, id);
     }
 
-   /* @Override
-    @GetMapping
-    public List<MealTo> getBetween(@RequestBody LocalDate startDate, @RequestBody LocalTime startTime, @RequestBody LocalDate endDate, @RequestBody LocalTime endTime) {
+    @Override
+    @GetMapping(value = "/filter")
+    public List<MealTo> getBetween(LocalDate startDate,  LocalTime startTime,  LocalDate endDate,  LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
-    }*/
+    }
+
+    @GetMapping
+    public List<MealTo> getAll() {
+        return super.getAll();
+    }
+
 }

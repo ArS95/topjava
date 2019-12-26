@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava;
 
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -49,6 +50,11 @@ public class UserTestData {
     }
 
     public static ResultMatcher contentJson(User expected) {
-        return result -> assertMatch(readFromJsonMvcResult(result, User.class), expected);
+        return new ResultMatcher() {
+            @Override
+            public void match(MvcResult result) throws Exception {
+                assertMatch(readFromJsonMvcResult(result, User.class), expected);
+            }
+        };
     }
 }
