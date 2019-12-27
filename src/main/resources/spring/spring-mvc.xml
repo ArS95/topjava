@@ -7,21 +7,32 @@
 
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
 
-    <mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionService">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper"/>
             </bean>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-<!--                <property name="supportedMediaTypes">-->
-<!--                    <list>-->
-<!--                        <value>text/plain;charset=UTF-8</value>-->
-<!--                        <value>text/html;charset=UTF-8</value>-->
-<!--                    </list>-->
-<!--                </property>-->
+                <!--                <property name="supportedMediaTypes">-->
+                <!--                    <list>-->
+                <!--                        <value>text/plain;charset=UTF-8</value>-->
+                <!--                        <value>text/html;charset=UTF-8</value>-->
+                <!--                    </list>-->
+                <!--                </property>-->
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+
+    <bean id="conversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatters">
+            <set>
+                <bean class="ru.javawebinar.topjava.util.formatter.DateFormatter"/>
+                <bean class="ru.javawebinar.topjava.util.formatter.TimeFormatter"/>
+            </set>
+        </property>
+    </bean>
+
 
     <context:component-scan base-package="ru.javawebinar.**.web"/>
 
@@ -32,17 +43,17 @@
           p:prefix="/WEB-INF/jsp/"
           p:suffix=".jsp"/>
 
-<!--
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
-          p:cacheSeconds="60"
-          p:defaultEncoding="UTF-8">
-        <property name="basenames">
-            <list>
-                <value>messages/app</value>
-            </list>
-        </property>
-    </bean>
--->
+    <!--
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+              p:cacheSeconds="60"
+              p:defaultEncoding="UTF-8">
+            <property name="basenames">
+                <list>
+                    <value>messages/app</value>
+                </list>
+            </property>
+        </bean>
+    -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
           p:cacheSeconds="5"
           p:defaultEncoding="UTF-8">
