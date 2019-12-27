@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+
 
 @RestController
 @RequestMapping(value = MealRestController.REST_MEALS, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +52,10 @@ public class MealRestController extends AbstractMealController {
 
     @Override
     @GetMapping(value = "/filter")
-    public List<MealTo> getBetween(LocalDate startDate,  LocalTime startTime,  LocalDate endDate,  LocalTime endTime) {
+    public List<MealTo> getBetween(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                   @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
+                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                   @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
