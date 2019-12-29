@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.web;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.NoOpCacheManager;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,8 +37,14 @@ abstract public class AbstractControllerTest {
 
     protected MockMvc mockMvc;
 
-    @Autowired
-    private CacheManager cacheManager;
+    /*   @Autowired
+       private CacheManager cacheManager;
+   */
+
+    @Bean
+    public CacheManager cacheManager() {
+        return new NoOpCacheManager();
+    }
 
     @Autowired(required = false)
     private JpaUtil jpaUtil;
@@ -54,7 +62,7 @@ abstract public class AbstractControllerTest {
 
     @BeforeEach
     void setUp() {
-        cacheManager.getCache("users").clear();
+//        cacheManager.getCache("users").clear();
         if (jpaUtil != null) {
             jpaUtil.clear2ndLevelHibernateCache();
         }
