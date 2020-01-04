@@ -51,5 +51,4 @@ public class MealAjaxController extends AbstractMealController {
             @RequestParam @Nullable LocalTime endTime) {
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
-
 }
