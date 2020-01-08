@@ -25,7 +25,7 @@ public class MealAjaxController extends AbstractMealController {
     }
 
     @Override
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<MealTo> getAll() {
         return super.getAll();
     }
@@ -33,10 +33,10 @@ public class MealAjaxController extends AbstractMealController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void createMeal(@RequestParam Integer id,
-                           @RequestParam LocalDateTime name,
+                           @RequestParam LocalDateTime dateTime,
                            @RequestParam String description,
                            @RequestParam int calories) {
-        Meal meal = new Meal(id, name, description, calories);
+        Meal meal = new Meal(id, dateTime, description, calories);
         if (meal.isNew()) {
             super.create(meal);
         }
