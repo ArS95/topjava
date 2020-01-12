@@ -1,7 +1,8 @@
 // $(document).ready(function () {
+var ajaxMealUrl = "ajax/profile/meals/";
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/profile/meals/",
+            ajaxUrl: ajaxMealUrl,
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -34,3 +35,15 @@ $(function () {
         }
     );
 });
+
+function filter() {
+    $.ajax({
+        type: "GET",
+        url: ajaxMealUrl + "filter"
+    }).done(function () {
+
+        updateTable();
+        // updateTableByFilter();
+        successNoty("Filtered");
+    })
+}
